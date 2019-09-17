@@ -1,0 +1,33 @@
+name: 32bit binary
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up 32bit apt-get
+      run: |
+        sudo dpkg --add-architecture i386
+        sudo apt-get update
+    - name: Install 32bit GCC
+      run: |
+        sudo apt-get remove php7.3-fpm
+        sudo apt-get install gcc:i386 cpp:i386 cpp-7:i386 gcc-7:i386 binutils:i386
+    - name: Install 32bit GHC and cabal-install
+      run: sudo apt-get install ghc:i386 cabal-install:i386
+    - name: Install hpack and generate cabal file
+      run: |
+        sudo apt-get install hpack
+        hpack
+    - name: Build 32bit zlib
+      run: |
+        sudo apt-get install libghc-zlib-dev:i386
+        # cabal install zlib --ghc-option="-optc-m32" --ghc-option="-opta-m32" --ghc-option="-optl-m32" --ld-option="-melf_i386" --hsc2hs-options="--cflag=-m32 --lflag=-m32"
+    - name: Build 32bit taskell
+      run: |
+        cabal update
+        cabal install --ghc-option="-optc-m32" --ghc-option="-opta-m32" --ghc-option="-optl-m32" --ld-option="-melf_i386"
