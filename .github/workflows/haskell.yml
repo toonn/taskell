@@ -23,7 +23,7 @@ jobs:
           authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
       - name: Build 32bit taskell
         run: |
-          nix-build -E 'import ./default.nix { cross = "musl32"; }'
+          nix-build -E 'import ./default.nix {}'
       - name: Set tag.name
         id: tag
         run: echo ::set-output name=name::${GITHUB_REF#refs/tags/}
